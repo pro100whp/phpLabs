@@ -11,13 +11,13 @@ h1 {
     text-align: center;
 }
 
-.books-container { 
+.events-container { 
     display: flex; 
     flex-direction: column; 
     gap: 15px; 
 }
 
-.book-card { 
+.event-card { 
     border: 1px solid #ccc; 
     padding: 15px; 
     border-radius: 8px; 
@@ -25,17 +25,17 @@ h1 {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
 }
 
-.book-card p {
+.event-card p {
     margin: 5px 0;
 }
 
 .status-available { 
-    color: #2e7d32; 
+    color: #2e7d32; /* Зелений для доступних */
     font-weight: bold; 
 }
 
-.status-issued { 
-    color: #c62828; 
+.status-soldout { 
+    color: #c62828; /* Червоний, якщо немає квитків */
     font-weight: bold; 
 }
 
