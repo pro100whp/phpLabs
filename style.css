@@ -1,0 +1,48 @@
+body { 
+    font-family: Arial, sans-serif; 
+    padding: 20px; 
+    max-width: 800px; 
+    margin: 0 auto; 
+    background-color: #f4f4f9;
+}
+
+h1 { 
+    color: #333; 
+    text-align: center;
+}
+
+.books-container { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+}
+
+.book-card { 
+    border: 1px solid #ccc; 
+    padding: 15px; 
+    border-radius: 8px; 
+    background-color: #ffffff; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+}
+
+.book-card p {
+    margin: 5px 0;
+}
+
+.status-available { 
+    color: #2e7d32; 
+    font-weight: bold; 
+}
+
+.status-issued { 
+    color: #c62828; 
+    font-weight: bold; 
+}
+
+.summary { 
+    background: #e3f2fd; 
+    padding: 20px; 
+    border-radius: 8px; 
+    margin-top: 30px; 
+    border-left: 5px solid #1976d2; 
+}
