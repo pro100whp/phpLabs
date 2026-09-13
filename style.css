@@ -30,12 +30,12 @@ h1 {
 }
 
 .status-available { 
-    color: #2e7d32; /* Зелений для доступних */
+    color: #2e7d32;
     font-weight: bold; 
 }
 
 .status-soldout { 
-    color: #c62828; /* Червоний, якщо немає квитків */
+    color: #c62828;
     font-weight: bold; 
 }
 

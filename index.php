@@ -1,72 +1,57 @@
 <?php
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
-$books = [
-    ['title' => '1984', 'author' => 'Джордж Оруелл', 'year' => 1949, 'pages' => 328, 'isAvailable' => true],
-    ['title' => 'Майстер і Маргарита', 'author' => 'Михайло Булгаков', 'year' => 1967, 'pages' => 480, 'isAvailable' => false],
-    ['title' => 'Кобзар', 'author' => 'Тарас Шевченко', 'year' => 1840, 'pages' => 240, 'isAvailable' => true],
-    ['title' => 'Дюна', 'author' => 'Френк Герберт', 'year' => 1965, 'pages' => 704, 'isAvailable' => false],
-    ['title' => 'Тіні забутих предків', 'author' => 'Михайло Коцюбинський', 'year' => 1911, 'pages' => 120, 'isAvailable' => true]
+$events = [
+    ['title' => 'Концерт гурту "ДахаБраха"', 'date' => '2026-10-15', 'price' => 1200, 'seatsLeft' => 45],
+    ['title' => 'Вистава "Конотопська відьма"', 'date' => '2026-09-20', 'price' => 800, 'seatsLeft' => 0],
+    ['title' => 'Стендап-вечір', 'date' => '2026-09-25', 'price' => 400, 'seatsLeft' => 12],
+    ['title' => 'Кіно "Дюна 2"', 'date' => '2026-09-12', 'price' => 250, 'seatsLeft' => 0],
+    ['title' => 'IT-конференція', 'date' => '2026-11-05', 'price' => 3000, 'seatsLeft' => 150]
 ];
 
-
-function formatBook(array $book): string {
-    return "<b>{$book['title']}</b> (Автор: {$book['author']}, Рік: {$book['year']})";
+function formatEvent(array $event): string {
+    return "<b>{$event['title']}</b> (Дата: {$event['date']}, Вартість: {$event['price']} ₴)";
 }
 
+$totalExpectedIncome = 0;
 
-$totalPages = 0;
-$availableCount = 0;
-
-foreach ($books as $book) {
-    $totalPages += $book['pages'];
-    if ($book['isAvailable']) {
-        $availableCount++;
-    }
+foreach ($events as $event) {
+    $totalExpectedIncome += ($event['price'] * $event['seatsLeft']);
 }
-$averagePages = count($books) > 0 ? round($totalPages / count($books)) : 0;
 ?>
 
 <!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Бібліотека - Практична 1</title>
-    <!-- Подключаем наш файл стилей -->
+    <title>Система бронювання - Варіант 15</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Каталог книг (Варіант 1)</h1>
+    <h1>Афіша подій (Варіант 15)</h1>
 
-    <div class="books-container">
+    <div class="events-container">
         <?php
-        
-        foreach ($books as $book) {
+        foreach ($events as $event) {
             
-            
-            if ($book['isAvailable']) {
-                $status = '<span class="status-available">Доступна</span>';
+            if ($event['seatsLeft'] == 0) {
+                $status = '<span class="status-soldout">Квитків немає</span>';
             } else {
-                $status = '<span class="status-issued">Видана</span>';
+                $status = '<span class="status-available">Доступно квитків: ' . $event['seatsLeft'] . ' шт.</span>';
             }
 
-            echo '<div class="book-card">';
-            echo '<p>Назва: ' . formatBook($book) . '</p>';
-            echo '<p>Кількість сторінок: ' . $book['pages'] . '</p>';
+            echo '<div class="event-card">';
+            echo '<p>Подія: ' . formatEvent($event) . '</p>';
             echo '<p>Статус: ' . $status . '</p>';
             echo '</div>';
         }
         ?>
     </div>
 
-    <!-- Блок з агрегатними показниками -->
     <div class="summary">
-        <h2>Статистика бібліотеки:</h2>
-        <p>Середня кількість сторінок: <b><?= $averagePages ?></b> стор.</p>
-        <p>Кількість доступних книг: <b><?= $availableCount ?></b> шт.</p>
+        <h2>Фінансова статистика:</h2>
+        <p>Сумарний потенційний дохід від усіх подій: <b><?= $totalExpectedIncome ?> ₴</b></p>
     </div>
 </body>
 </html>
