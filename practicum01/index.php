@@ -25,11 +25,11 @@ foreach ($events as $event) {
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Система бронювання - Варіант 15</title>
+    <title>Система бронювання</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Афіша подій (Варіант 15)</h1>
+    <h1>Афіша подій </h1>
 
     <div class="events-container">
         <?php
