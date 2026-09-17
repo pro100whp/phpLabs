@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог напоїв</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; display: flex; gap: 20px; flex-wrap: wrap; }
+        .recipe-card {
+            background: white; padding: 20px; border-radius: 10px; width: 250px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; text-align: center;
+        }
+        .recipe-card h3 { margin-top: 0; }
+        
+        /* Склянка */
+        .glass {
+            width: 80px; height: 120px; margin: 20px auto;
+            border: 4px solid #b0c4de; border-top: none;
+            border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;
+            position: relative; overflow: hidden; background: #f8fbff;
+        }
+
+        /* Напій (рідина) */
+        .liquid {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            transform-origin: bottom; 
+            transform: scaleY(0); /* Початковий стан - склянка порожня */
+            transition: transform 1.2s ease-in-out; /* Плавна анімація наливання */
+        }
+
+        /* Кольори напоїв */
+        .liquid.mojito { background: rgba(46, 204, 113, 0.8); }
+        .liquid.cola { background: rgba(52, 73, 94, 0.9); }
+        .liquid.juice { background: rgba(241, 196, 15, 0.8); }
+
+        /* Стан відкритого рецепта (налито) */
+        .recipe-card.active .liquid {
+            transform: scaleY(0.85); /* Склянка наповнюється на 85% */
+        }
+
+        .instructions {
+            max-height: 0; overflow: hidden; transition: max-height 0.5s ease;
+            color: #555; font-size: 14px; margin-top: 15px; text-align: left;
+        }
+        .recipe-card.active .instructions {
+            max-height: 200px; /* Плавна поява тексту */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="recipe-card" onclick="this.classList.toggle('active')">
+        <h3>Мохіто</h3>
+        <div class="glass">
+            <div class="liquid mojito"></div>
+        </div>
+        <div class="instructions">
+            <strong>Рецепт:</strong><br>М'ята, лайм, цукор, ром, содова, лід. Натисніть ще раз, щоб закрити.
+        </div>
+    </div>
+
+    <div class="recipe-card" onclick="this.classList.toggle('active')">
+        <h3>Вишнева Кола</h3>
+        <div class="glass">
+            <div class="liquid cola"></div>
+        </div>
+        <div class="instructions">
+            <strong>Рецепт:</strong><br>Кола, вишневий сироп, лід. Натисніть ще раз, щоб закрити.
+        </div>
+    </div>
+
+    <div class="recipe-card" onclick="this.classList.toggle('active')">
+        <h3>Апельсиновий фреш</h3>
+        <div class="glass">
+            <div class="liquid juice"></div>
+        </div>
+        <div class="instructions">
+            <strong>Рецепт:</strong><br>3 свіжих апельсини. Натисніть ще раз, щоб закрити.
+        </div>
+    </div>
+
+</body>
+</html>

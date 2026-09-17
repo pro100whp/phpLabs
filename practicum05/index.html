@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Афіша</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: 0 auto; }
+        .controls { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        input[type="text"], input[type="date"], input[type="number"] { padding: 8px; margin-right: 5px; }
+        button { padding: 8px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background: #f4f4f4; }
+        .buy-btn { background: #28a745; }
+        .sold-out { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>Афіша подій</h2>
+    
+    <div class="controls">
+        <input type="text" id="search" placeholder="Пошук за місцем проведення...">
+    </div>
+
+    <form id="addForm">
+        <input type="text" id="title" placeholder="Назва" required>
+        <input type="date" id="date" required>
+        <input type="text" id="venue" placeholder="Локація" required>
+        <input type="number" id="seats" placeholder="Місця" required min="1">
+        <button type="submit">Додати подію</button>
+    </form>
+
+    <div id="error-message" style="color: red; margin-top: 10px;"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Назва</th>
+                <th>Дата</th>
+                <th>Локація</th>
+                <th>Місця</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody id="results">
+        </tbody>
+    </table>
+
+    <script>
+        const resultsContainer = document.getElementById('results');
+        const searchInput = document.getElementById('search');
+        const addForm = document.getElementById('addForm');
+        const errorContainer = document.getElementById('error-message');
+
+        async function loadEvents(query = '') {
+            try {
+                const response = await fetch('api_list.php?q=' + encodeURIComponent(query));
+                if (!response.ok) throw new Error('Помилка завантаження даних');
+                const data = await response.json();
+                renderTable(data);
+            } catch (err) {
+                errorContainer.innerText = err.message;
+            }
+        }
+
+        function renderTable(data) {
+            resultsContainer.innerHTML = '';
+            data.forEach(event => {
+                const tr = document.createElement('tr');
+                
+                let actionHtml = '';
+                if (event.seats_left > 0) {
+                    actionHtml = `<button class="buy-btn" onclick="buyTicket(${event.id})">Купити квиток</button>`;
+                } else {
+                    actionHtml = `<span class="sold-out">Sold Out</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td>${escapeHtml(event.title)}</td>
+                    <td>${escapeHtml(event.event_date)}</td>
+                    <td>${escapeHtml(event.venue)}</td>
+                    <td>${event.seats_left}</td>
+                    <td>${actionHtml}</td>
+                `;
+                resultsContainer.appendChild(tr);
+            });
+        }
+
+        async function buyTicket(id) {
+            try {
+                const response = await fetch('api_buy.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                });
+                if (response.ok) {
+                    loadEvents(searchInput.value);
+                }
+            } catch (err) {
+                errorContainer.innerText = 'Помилка при покупці';
+            }
+        }
+
+        addForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newEvent = {
+                title: document.getElementById('title').value,
+                event_date: document.getElementById('date').value,
+                venue: document.getElementById('venue').value,
+                seats_left: parseInt(document.getElementById('seats').value)
+            };
+
+            try {
+                const response = await fetch('api_add.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newEvent)
+                });
+                
+                if (response.ok) {
+                    addForm.reset();
+                    loadEvents(searchInput.value);
+                }
+            } catch (err) {
+                errorContainer.innerText = 'Помилка при додаванні';
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            loadEvents(e.target.value);
+        });
+
+        function escapeHtml(unsafe) {
+            return (unsafe || '').toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        loadEvents();
+    </script>
+</body>
+</html>
