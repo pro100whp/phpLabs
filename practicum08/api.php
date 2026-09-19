@@ -45,14 +45,14 @@ if ($method === 'GET') {
     }
     
 } elseif ($method === 'POST') {
-    $input = json_decode(file_get_contents('php://input'), true) ?? $_POST;
+    $input = json_decode(file_get_contents('php://input'), true) ?? $_POST;
 
-    // Перевірка CSRF токена для всіх дій, що змінюють дані
-    if (!hash_equals($_SESSION['csrf_token'] ?? '', $input['csrf_token'] ?? '')) {
-        http_response_code(403);
-        echo json_encode(['success' => false, 'error' => 'Недійсний CSRF-токен']);
-        exit;
-    }
+    // Перевірка CSRF токена: спочатку перевіряємо чи він взагалі є в сесії, щоб уникнути hash_equals('', '')
+    if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $input['csrf_token'] ?? '')) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'error' => 'Недійсний або відсутній CSRF-токен']);
+        exit;
+    }
 
     if ($action === 'buy') {
         if (!isset($input['id'])) {

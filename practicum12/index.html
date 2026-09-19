@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог напоїв</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; display: flex; gap: 20px; flex-wrap: wrap; }
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
+        #catalog { display: flex; gap: 20px; flex-wrap: wrap; }
         .recipe-card {
             background: white; padding: 20px; border-radius: 10px; width: 250px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; text-align: center;
         }
         .recipe-card h3 { margin-top: 0; }
         
-        /* Склянка */
         .glass {
             width: 80px; height: 120px; margin: 20px auto;
             border: 4px solid #b0c4de; border-top: none;
@@ -20,22 +20,11 @@
             position: relative; overflow: hidden; background: #f8fbff;
         }
 
-        /* Напій (рідина) */
         .liquid {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
             transform-origin: bottom; 
-            transform: scaleY(0); /* Початковий стан - склянка порожня */
-            transition: transform 1.2s ease-in-out; /* Плавна анімація наливання */
-        }
-
-        /* Кольори напоїв */
-        .liquid.mojito { background: rgba(46, 204, 113, 0.8); }
-        .liquid.cola { background: rgba(52, 73, 94, 0.9); }
-        .liquid.juice { background: rgba(241, 196, 15, 0.8); }
-
-        /* Стан відкритого рецепта (налито) */
-        .recipe-card.active .liquid {
-            transform: scaleY(0.85); /* Склянка наповнюється на 85% */
+            transform: scaleY(0); 
+            transition: transform 1.2s ease-in-out;
         }
 
         .instructions {
@@ -43,41 +32,75 @@
             color: #555; font-size: 14px; margin-top: 15px; text-align: left;
         }
         .recipe-card.active .instructions {
-            max-height: 200px; /* Плавна поява тексту */
+            max-height: 200px;
         }
     </style>
 </head>
 <body>
 
-    <div class="recipe-card" onclick="this.classList.toggle('active')">
-        <h3>Мохіто</h3>
-        <div class="glass">
-            <div class="liquid mojito"></div>
-        </div>
-        <div class="instructions">
-            <strong>Рецепт:</strong><br>М'ята, лайм, цукор, ром, содова, лід. Натисніть ще раз, щоб закрити.
-        </div>
-    </div>
+    <h2>Каталог рецептів</h2>
+    <div id="catalog"></div>
 
-    <div class="recipe-card" onclick="this.classList.toggle('active')">
-        <h3>Вишнева Кола</h3>
-        <div class="glass">
-            <div class="liquid cola"></div>
-        </div>
-        <div class="instructions">
-            <strong>Рецепт:</strong><br>Кола, вишневий сироп, лід. Натисніть ще раз, щоб закрити.
-        </div>
-    </div>
+    <script>
+        // Дані домену (імітація отриманих з бекенду/localStorage)
+        const recipes = [
+            {
+                id: 1,
+                title: "Мохіто",
+                color: "rgba(46, 204, 113, 0.8)",
+                volumePercent: 0.90, // 90% склянки
+                text: "М'ята, лайм, цукор, ром, содова, лід."
+            },
+            {
+                id: 2,
+                title: "Вишнева Кола",
+                color: "rgba(52, 73, 94, 0.9)",
+                volumePercent: 0.75, // 75% склянки
+                text: "Кола, вишневий сироп, лід."
+            },
+            {
+                id: 3,
+                title: "Еспресо Тонік",
+                color: "rgba(139, 69, 19, 0.85)",
+                volumePercent: 0.60, // 60% склянки
+                text: "Подвійний еспресо, тонік, лід, скибка лимона."
+            }
+        ];
 
-    <div class="recipe-card" onclick="this.classList.toggle('active')">
-        <h3>Апельсиновий фреш</h3>
-        <div class="glass">
-            <div class="liquid juice"></div>
-        </div>
-        <div class="instructions">
-            <strong>Рецепт:</strong><br>3 свіжих апельсини. Натисніть ще раз, щоб закрити.
-        </div>
-    </div>
+        const catalogContainer = document.getElementById('catalog');
 
+        // Рендер карток на основі масиву об'єктів
+        function renderRecipes() {
+            recipes.forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = 'recipe-card';
+                card.onclick = function() {
+                    this.classList.toggle('active');
+                    const liquid = this.querySelector('.liquid');
+                    // Якщо картка активна, наливаємо до об'єму з масиву, інакше - пуста склянка
+                    if (this.classList.contains('active')) {
+                        liquid.style.transform = `scaleY(${recipe.volumePercent})`;
+                    } else {
+                        liquid.style.transform = 'scaleY(0)';
+                    }
+                };
+
+                card.innerHTML = `
+                    <h3>${recipe.title}</h3>
+                    <div class="glass">
+                        <div class="liquid" style="background: ${recipe.color};"></div>
+                    </div>
+                    <div class="instructions">
+                        <strong>Рецепт:</strong><br>${recipe.text}
+                    </div>
+                `;
+                
+                catalogContainer.appendChild(card);
+            });
+        }
+
+        // Запуск рендеру при завантаженні сторінки
+        document.addEventListener('DOMContentLoaded', renderRecipes);
+    </script>
 </body>
 </html>
